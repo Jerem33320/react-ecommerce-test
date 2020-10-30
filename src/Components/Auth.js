@@ -42,6 +42,11 @@ const authBtn = {
   color: "white"
 }
 
+const errorValid = {
+  color: 'red',
+  marginTop: "10px"
+}
+
 export default class Auth extends React.Component{
   constructor(props){
     super(props)
@@ -51,7 +56,8 @@ export default class Auth extends React.Component{
       email: '',
       password: '',
       authIn: false,
-      users: []
+      users: [],
+      error: ''
     }
   }
 
@@ -65,6 +71,11 @@ export default class Auth extends React.Component{
           password: this.state.password,
           products: {}
         }
+      }
+
+      const name = this.state.name;
+      if (/[^a-zA-Z -]/.test(name)) {
+          return this.setState({error: 'Invalide caractère...'});
       }
       
       axios.post('http://localhost:3001/auth', user);
@@ -106,7 +117,6 @@ export default class Auth extends React.Component{
     if(this.state.authIn === true){
       console.log("Auth Route ready");
       return(<Redirect to="/login"/>)
-      // return this.props.history.push('/login');
     }
 
     return(
@@ -119,6 +129,7 @@ export default class Auth extends React.Component{
           <input style={authInput} onChange={this.handlePasswordValue} placeholder="Password"/>
           <button style={authBtn} onSubmit={this.handleSubmit}>SIGN UP</button>
         </form>
+        <div style={errorValid}>{this.state.error}</div>
       </section>
     )
   }

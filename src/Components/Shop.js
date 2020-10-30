@@ -36,6 +36,27 @@ const rightShop = {
   backgroundColor: "rgb(237, 90, 119)",
   height: "100vh",
   width: "50vw",
+
+  overflow: "scroll",
+}
+
+const productsBoxStyle = {
+  margin: "10px",
+  height: "90%",
+  width: "90%"
+}
+
+const basketTitleStyle = {
+  position: 'absolute',
+  bottom: 0,
+  right: 0,
+  writingMode: "vertical-rl",
+  textOrientation: "upright",
+}
+
+const errorValid = {
+  color: 'red',
+  marginTop: "10px"
 }
 
 export default class Shop extends React.Component{
@@ -48,6 +69,7 @@ export default class Shop extends React.Component{
       nameValue: '',
       quantityValue: '',
       colorValue: '',
+      error: ''
     }
   }
 
@@ -99,6 +121,11 @@ export default class Shop extends React.Component{
         color: this.state.colorValue,
       }
 
+      const quantity = this.state.quantityValue;
+      if (!(/^0$|^[1-9][0-9]*$/).test(quantity)) {
+          return this.setState({error: 'Invalide caractère...ex: 1'});
+      }
+
       await axios.post('http://localhost:3001/shop', data1);
       const products =  this.state.products.push(Map(data1));
       console.log('products',products);
@@ -115,6 +142,7 @@ export default class Shop extends React.Component{
     return(
       <main style={shop}>
         <div style={leftShop}>
+          <div style={errorValid}>{this.state.error}</div>
           <h1>Le SHOP de {this.state.username}</h1>
           <h2>Ajouter des produits au panier</h2>
           <ShopForm 
@@ -125,20 +153,22 @@ export default class Shop extends React.Component{
           />
         </div>
         <div style={rightShop}>
-          <h2>Panier</h2>
-          {
-            this.state.products.map(product => {
-              return(
-                <Product 
-                  product={product}
-                  key={shortid.generate()}
-                  name={product.name}
-                  quantity={product.quantity}
-                  color={product.color}
-                />
-              )
-            })
-          } 
+          <h2 style={basketTitleStyle}>Panier</h2>
+          <div style={productsBoxStyle}>
+            {
+              this.state.products.map(product => {
+                return(
+                  <Product 
+                    product={product}
+                    key={shortid.generate()}
+                    name={product.name}
+                    quantity={product.quantity}
+                    color={product.color}
+                  />
+                )
+              })
+            } 
+          </div>
         </div>
       </main>
     )
