@@ -2,6 +2,45 @@ import React from 'react';
 import {Redirect} from 'react-router-dom';
 import axios from 'axios';
 
+const login = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  flexDirection: "column",
+
+  height: "100vh",
+  width: "100vw",
+
+  backgroundColor: 'rgb(237, 90, 119)',
+  color: 'white'
+}
+
+const loginTitle = {
+  marginBottom: "40px",
+  fontSize: "3rem"
+}
+
+const loginInput = {
+  border: "none",
+  outline: "none",
+
+  height: "40px",
+  borderRadius: "10px",
+  marginRight: "10px",
+  textAlign: "center"
+}
+
+const loginBtn = {
+  border: "none",
+
+  height: "40px",
+  borderRadius: "10px",
+  marginRight: "10px",
+  textAlign: "center",
+  backgroundColor: "black",
+  color: "white"
+}
+
 export default class Login extends React.Component{
   constructor(props){
     super(props)
@@ -52,12 +91,12 @@ export default class Login extends React.Component{
     }
 
     return(
-      <section>
-        <h1>Login</h1>
+      <section style={login}>
+        <h1 style={loginTitle}>Login</h1>
         <form onSubmit={this.handleSubmit}>
-          <input onChange={this.handleEmailValue} placeholder="Email"/>
-          <input onChange={this.handlePasswordValue} placeholder="Password"/>
-          <button onSubmit={this.handleSubmit}>Login</button>
+          <input style={loginInput} onChange={this.handleEmailValue} placeholder="Email"/>
+          <input style={loginInput} onChange={this.handlePasswordValue} placeholder="Password"/>
+          <button style={loginBtn} onSubmit={this.handleSubmit}>Login</button>
         </form>
       </section>
     )

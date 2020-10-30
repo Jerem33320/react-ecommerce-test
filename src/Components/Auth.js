@@ -3,6 +3,45 @@ import shortid from 'shortid';
 import {Redirect} from 'react-router-dom';
 import axios from 'axios';
 
+const auth = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  flexDirection: "column",
+
+  height: "100vh",
+  width: "100vw",
+
+  backgroundColor: 'black',
+  color: 'white'
+}
+
+const authTitle = {
+  marginBottom: "40px",
+  fontSize: "3rem"
+}
+
+const authInput = {
+  border: "none",
+  outline: "none",
+
+  height: "40px",
+  borderRadius: "10px",
+  marginRight: "10px",
+  textAlign: "center"
+}
+
+const authBtn = {
+  border: "none",
+
+  height: "40px",
+  borderRadius: "10px",
+  marginRight: "10px",
+  textAlign: "center",
+  backgroundColor: "rgb(237, 90, 119)",
+  color: "white"
+}
+
 export default class Auth extends React.Component{
   constructor(props){
     super(props)
@@ -47,7 +86,7 @@ export default class Auth extends React.Component{
   handleNameValue = e => {
     this.setState({
       id: shortid.generate(),
-      name: e.target.value
+      name: e.target.value.trim().replace(/^\w/, (c) => c.toUpperCase())
     })
   }
 
@@ -67,16 +106,18 @@ export default class Auth extends React.Component{
     if(this.state.authIn === true){
       console.log("Auth Route ready");
       return(<Redirect to="/login"/>)
+      // return this.props.history.push('/login');
     }
 
     return(
-      <section>
-        <h1>S'authentifier</h1>
+      <section style={auth}>
+        <h1 style={authTitle}>Bienvenue sur le Shop E-commerce</h1>
+        <h2>S'enregistrer</h2>
         <form onSubmit={this.handleSubmit}>
-          <input onChange={this.handleNameValue} placeholder="Entrez votre nom"/>
-          <input onChange={this.handleEmailValue} placeholder="Email"/>
-          <input onChange={this.handlePasswordValue} placeholder="Password"/>
-          <button onSubmit={this.handleSubmit}>S'authentifier</button>
+          <input style={authInput} onChange={this.handleNameValue} placeholder="Entrez votre nom"/>
+          <input style={authInput} onChange={this.handleEmailValue} placeholder="Email"/>
+          <input style={authInput} onChange={this.handlePasswordValue} placeholder="Password"/>
+          <button style={authBtn} onSubmit={this.handleSubmit}>SIGN UP</button>
         </form>
       </section>
     )

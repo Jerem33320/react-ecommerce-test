@@ -11,25 +11,29 @@ server.use(bodyParser.urlencoded({
 }));
 
 let users = {}
+//{ 'goku': { name: 'goku', email: '', password: '', products: {} }}
 
 //AUTH
 server.post('/auth', function(req, res){
   let user = req.body;
   users = {...users, user};
-  console.log('TEST AUTH: ', users);
-  res.send(user);
+  // console.log('TEST AUTH: ', users.user);
+  res.json(users);
 })
 
 //LOGIN
 server.get('/login', function(req, res){
   console.log('TEST LOGIN:' ,Object.values(users.user).shift());
-  res.send(Object.values(users.user).shift())
+  res.json(Object.values(users.user).shift())
 })
 
-//SHOP get username
+//SHOP GET PRODUCTS AND NAME
 server.get('/shop', function(req,res){
-  console.log('Test SHOP:', Object.values(users.user).shift().name);
-  res.send(Object.values(users.user).shift().name)
+  // console.log('Test SHOP:', Object.values(users.user).shift().name);
+  res.json(Object.values(users.user).shift())
 })
+
+//SHOP ADD PRODUCT
+//SHOP DELETE PRODUCT
 
 server.listen(3001);
