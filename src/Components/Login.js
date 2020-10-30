@@ -58,9 +58,7 @@ export default class Login extends React.Component{
     e.preventDefault();
     try{
       const user = await axios.get('http://localhost:3001/login');
-      console.log(user.data.email);
       if(user.data.email === this.state.email && user.data.password === this.state.password){
-        console.log("login réussie");
         this.setState({
           logIn: true
         })
@@ -86,7 +84,6 @@ export default class Login extends React.Component{
 
   render(){
     if(this.state.logIn === true){
-      console.log("log Route ready");
       return(<Redirect to="/shop"/>)
     }
 

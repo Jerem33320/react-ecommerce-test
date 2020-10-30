@@ -2,7 +2,7 @@ const express = require('express');
 const server = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const shortid = require('shortid');
+// const shortid = require('shortid');
 
 server.use(cors());
 server.use(bodyParser.json());
@@ -23,7 +23,7 @@ server.post('/auth', function(req, res){
 
 //LOGIN
 server.get('/login', function(req, res){
-  console.log('TEST LOGIN:' ,Object.values(users.user).shift());
+  // console.log('TEST LOGIN:' ,Object.values(users.user).shift());
   res.json(Object.values(users.user).shift())
 })
 
@@ -34,6 +34,13 @@ server.get('/shop', function(req,res){
 })
 
 //SHOP ADD PRODUCT
+server.post('/shop', function(req,res){
+  const productValue = req.body;
+  let products = Object.values(users.user).shift().products;
+  products = {...products, productValue};
+  res.json(products)
+})
+
 //SHOP DELETE PRODUCT
 
 server.listen(3001);

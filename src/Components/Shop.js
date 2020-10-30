@@ -1,5 +1,10 @@
 import React from 'react';
 import axios from 'axios';
+import ShopForm from './ShopForm';
+import {List, Map} from 'immutable';
+import User from '../entities/User';
+import Product from './Product';
+import shortid from 'shortid';
 
 const shop = {
   display: "flex",
@@ -22,33 +27,6 @@ const leftShop = {
   width: "50vw",
 }
 
-const formShop = {
-  display: "flex",
-  flexDirection: "column"
-}
-
-const shopInput = {
-  border: "none",
-  outline: "none",
-
-  height: "40px",
-  borderRadius: "10px",
-  marginBottom: "10px",
-  textAlign: "center"
-}
-
-const shopBtn = {
-  border: "none",
-
-  height: "40px",
-  borderRadius: "10px",
-  textAlign: "center",
-  backgroundColor: "black",
-  color: "white",
-  fontWeight: "bold",
-  fontSize: "1.2rem"
-}
-
 const rightShop = {
   display: "flex",
   flexDirection: "column",
@@ -64,9 +42,12 @@ export default class Shop extends React.Component{
   constructor(props){
     super(props)
     this.state = {
-      users: {},
+      loggedUser: '',
       username: 'unset',
-      products: {}
+      products: new List(),
+      nameValue: '',
+      quantityValue: '',
+      colorValue: '',
     }
   }
 
@@ -74,13 +55,33 @@ export default class Shop extends React.Component{
     this.getUser()
   }
 
+  handleName = (value) => {
+    this.setState({
+      nameValue: value,
+    })
+  }
+
+  handleQuantity = (value) => {
+    this.setState({
+      quantityValue: value
+    })
+  }
+
+  handleColor = (value) => {
+    this.setState({
+      colorValue: value
+    })
+  }
+
+
   getUser = async () => {
     try{
-      const username = await axios.get('http://localhost:3001/shop');
-      console.log('username' , username.data.products);
-      if(username.data.name){
+      const userData = await axios.get('http://localhost:3001/shop');
+      const user = new User(userData);
+      if(userData.data.name){
         this.setState({
-          username: username.data.name
+          loggedUser: user,
+          username: userData.data.name
         })
       } else {
         console.log("no username...");
@@ -90,26 +91,54 @@ export default class Shop extends React.Component{
     }
   }
 
+  addProduct = async () => {
+    try {
+      const data1 = {
+        name: this.state.nameValue,
+        quantity: this.state.quantityValue,
+        color: this.state.colorValue,
+      }
+
+      await axios.post('http://localhost:3001/shop', data1);
+      const products =  this.state.products.push(Map(data1));
+      console.log('products',products);
+      this.state.loggedUser.products.push(products);
+      this.setState({
+        products: List(products),
+      });
+    } catch(err){
+      console.log(err)
+    } 
+  }
+
   render(){
-    if(this.state.username === 'unset'){
-      this.getUser();
-    }
-    
     return(
       <main style={shop}>
         <div style={leftShop}>
           <h1>Le SHOP de {this.state.username}</h1>
           <h2>Ajouter des produits au panier</h2>
-          <form style={formShop}>
-            <input style={shopInput} placeholder="Nom"/>
-            <input style={shopInput} placeholder="Quantité"/>
-            <input style={shopInput} placeholder="Couleur"/>
-            <input style={shopInput} placeholder="Prix"/>
-            <button style={shopBtn}>Ajouter</button>
-          </form>
+          <ShopForm 
+            handleName={this.handleName}
+            handleQuantity={this.handleQuantity}
+            handleColor={this.handleColor}
+            onSubmit={this.addProduct}
+          />
         </div>
         <div style={rightShop}>
           <h2>Panier</h2>
+          {
+            this.state.products.map(product => {
+              return(
+                <Product 
+                  product={product}
+                  key={shortid.generate()}
+                  name={product.name}
+                  quantity={product.quantity}
+                  color={product.color}
+                />
+              )
+            })
+          } 
         </div>
       </main>
     )
